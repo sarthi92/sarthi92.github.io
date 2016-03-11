@@ -1,0 +1,554 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Cosmik Corp</title>
+        <link rel="stylesheet" href="design.css">
+        <script src="jquery_min.js"></script>
+        <script src="master.js"></script>
+    </head>
+    <body>
+        <section>
+            <article id="codeEntry">
+                <div class="entry">C++: Implement Stacks as Queue</div>
+                <pre>
+#include&lt;iostream&gt;
+#include&lt;stack&gt;
+using namespace std;
+int main()
+{
+	stack &lt;int&gt; s[2];
+	int ch, flag = 0, count;
+
+	do{
+    cin >> ch;
+	switch (ch)
+	{
+	case 1:
+		cin >> ch;
+		if (s[0].size() == s[1].size())
+		{
+			s[flag].push(ch);
+		}
+		else
+		{
+			s[1 - flag].push(ch);
+		}
+		break;
+	case 2:
+		count = 0;
+        if(s[flag].empty()){cout&lt;&lt;"Queue Empty!\n";break;}
+		while (!s[flag].empty())
+		{
+			s[1 - flag].push(s[flag].top());
+			s[flag].pop();
+			++count;
+		}
+		cout &lt;&lt; s[1 - flag].top()&lt;&lt;endl;
+		s[1-flag].pop();
+		while (count != 1)
+		{
+			s[flag].push(s[1 - flag].top());
+			s[1-flag].pop();
+			--count;
+		}
+		flag = 1 - flag;
+		break;
+	}
+	}while (!0);
+	return 0;
+}
+                </pre>
+            </article>
+            <article id="codeEntry">
+                <div class="entry">C++: Detection &amp; Removal of Cycle in Linked List</div>
+                <pre>
+#include&lt;iostream&gt;
+using namespace std;
+struct Node
+{
+    int data;
+    Node* next;
+};
+
+int main()
+{
+    int ch,x;
+    Node *head=NULL,*temp1,*temp2;
+    Node *n;
+
+    while(!0)
+    {
+    cin>>ch;
+    switch(ch)
+    {
+    case 1://insert
+        n=new Node;
+        cin>>x;
+        n->data=x;
+        n->next=head;
+        head=n;
+        cout&lt;&lt;"INSERTED\n";
+        break;
+    case 2://make cycle at position x
+        cin>>x;
+        if(head!=NULL)
+        {
+        for(temp1=head;temp1->next!=NULL;temp1=temp1->next);
+        for(temp2=head;x>1;x--,temp2=temp2->next);
+        temp1->next=temp2;
+        }
+        cout&lt;&lt;"CYCLE CREATED\n";
+        break;
+    case 3://check if cycle exists
+        x=0;
+        temp1=temp2=head;
+        while(temp2!=NULL&amp;&amp;temp2->next!=NULL)
+        {
+            temp1=temp1->next;
+            temp2=temp2->next->next;
+            if(temp2->next->next==head)
+            {cout&lt;&lt;"LIST WAS CIRCULAR, TRANSFORMED TO LINEAR\n";temp2->next->next=NULL;break;}
+            if(temp2->next==head)
+            {cout&lt;&lt;"LIST WAS CIRCULAR, TRANSFORMED TO LINEAR\n";temp2->next=NULL;break;}
+            if(temp1==temp2){cout&lt;&lt;"CYCLE FOUND AT: ";x=1;break;}
+        }
+        if(x==1)
+        {
+            for(temp1=head;temp1->next!=temp2->next;temp1=temp1->next,temp2=temp2->next);
+            cout&lt;&lt;temp2->next->data&lt;&lt;endl;
+            temp2->next=NULL;
+            cout&lt;&lt;"CYCLE REMOVED!\n";
+        }
+        break;
+    case 4://traverse after removing loop
+        x=0;
+        for(temp1=head;temp1!=NULL;temp1=temp1->next)
+        {
+            ++x;
+            cout&lt;&lt;temp1->data&lt;&lt;" ";
+            if(x==100)
+                break;
+        }
+        cout&lt;&lt;"\nDISPLAYED\n";
+        break;
+    }
+    }
+    return 0;
+}
+                </pre>
+            </article>
+            <article id="codeEntry">
+                <div class="entry">VHDL Code for Full Adder, Shift Register &amp; Ripple Counter:</div>
+                <pre>
+--4BIT FULL ADDER
+entity fa is
+port(a,b,cin:in bit;sum,cout:out bit);
+end fa;
+architecture dataflow of fa is
+begin
+sum&lt;=(a xor b)xor cin;
+cout&lt;=(a and b)or(b and cin)or(a and cin);
+end dataflow;
+entity fa_add_sub is
+port(c,d:in bit_vector(3 downto 0);e:out bit_vector(4 downto 0));
+end fa_add_sub;
+architecture datum of fa_add_sub is
+component fa
+port(a,b,cin:in bit;sum,cout:out bit);
+end component;
+signal x:bit_vector(4 downto 0);
+begin
+x(0)&lt;='0';
+gen1:for i in 0 to 3 generate
+begin
+F:fa port map(c(i),d(i),x(i),e(i),x(i+1));
+end generate gen1;
+e(4)&lt;=x(4);
+end datum;
+entity fa4_tb is end fa4_tb;
+architecture fa4_tbdataflow of fa4_tb is
+component fa_add_sub
+port(c,d:in bit_vector(3 downto 0);e:out bit_vector(4 downto 0));
+end component;
+signal c:bit_vector(3 downto 0):="1011";
+signal d:bit_vector(3 downto 0):="0110";
+signal e:bit_vector(4 downto 0);
+begin
+uut:fa_add_sub port map(c=>c,d=>d,e=>e);
+end;
+ 
+--4BIT SHIFT REGISTER
+entity dff is
+port(D,CLK:in bit;Q:inout bit);
+end dff;
+architecture datum of dff is
+begin
+process(CLK)
+begin
+if CLK = '0' then Q&lt;=D;
+end if;
+end process;
+end datum;
+entity shiftreg is
+port(DIN,CLKIN:in bit;Q3,Q2,Q1,Q0:inout bit);
+end shiftreg;
+architecture behav of shiftreg is
+component dff is
+port(D,CLK:in bit;Q:inout bit);
+end component;
+begin
+D3:dff port map(DIN,CLKIN,Q3);
+D2:dff port map(Q3,CLKIN,Q2);
+D1:dff port map(Q2,CLKIN,Q1);
+D0:dff port map(Q1,CLKIN,Q0);
+end behav;
+ENTITY reg_final_tb_vhd IS
+END reg_final_tb_vhd;
+ARCHITECTURE behavior OF reg_final_tb_vhd IS 
+ COMPONENT shiftreg
+ PORT(
+  DIN : IN bit;
+  CLKIN : IN bit;       
+  Q3 : INOUT bit;
+  Q2 : INOUT bit;
+  Q1 : INOUT bit;
+  Q0 : INOUT bit
+  );
+ END COMPONENT;
+ SIGNAL DIN :  bit := '0';
+ SIGNAL CLKIN :  bit := '0';
+ SIGNAL Q3 :  bit :='0';
+ SIGNAL Q2 :  bit :='0';
+ SIGNAL Q1 :  bit :='0';
+ SIGNAL Q0 :  bit :='0';
+BEGIN
+ uut: shiftreg PORT MAP(
+  DIN => DIN,
+  CLKIN => CLKIN,
+  Q3 => Q3,
+  Q2 => Q2,
+  Q1 => Q1,
+  Q0 => Q0
+ );
+ tb : PROCESS BEGIN
+  wait for 1 ns;
+  CLKIN&lt;=not CLKIN;
+ END PROCESS;
+ tb2:process begin
+ wait for 9.99 ns;
+ DIN&lt;=not DIN;
+ end process;
+END;
+ 
+--4BIT RIPPLE COUNTER
+entity tff is
+  port(T,CLK:in bit;Q:inout bit);
+  end tff;
+architecture datum of tff is
+  begin
+   process(CLK)
+    begin
+     if CLK='0' then Q&lt;=not Q;
+     end if;
+    end process;
+end datum;
+entity ripple is
+ port(TIN,CLKIN:in bit;Q0,Q1,Q2,Q3:inout bit);
+end ripple;
+architecture behav of ripple is
+ component tff
+  port(T,CLK:in bit;Q:inout bit);
+ end component;
+ begin
+  T0:tff port map(TIN,CLKIN,Q0);
+  T1:tff port map(TIN,Q0,Q1);
+  T2:tff port map(TIN,Q1,Q2);
+  T3:tff port map(TIN,Q2,Q3);
+end behav;
+entity ripple_tb is end ripple_tb;
+architecture behav_tb of ripple_tb is
+component ripple
+ port(TIN,CLKIN:in bit;Q0,Q1,Q2,Q3:inout bit);
+end component;
+signal TIN:bit:='1';
+signal CLKIN:bit:='0';
+signal Q0:bit:='0';
+signal Q1:bit:='0';
+signal Q2:bit:='0';
+signal Q3:bit:='0';
+begin
+ uut:ripple port map(TIN=>TIN,CLKIN=>CLKIN,Q0=>Q0,Q1=>Q1,Q2=>Q2,Q3=>Q3);
+ tb:process begin
+ wait for 20 ns;
+ CLKIN&lt;=not CLKIN;
+ end process;
+end;
+                </pre>
+            </article>
+            <article id="codeEntry">
+                <div class="entry">PSPICE Code for Rectifiers &amp; Filters:</div>
+                <pre>
+*Diode Load Line
+V1 1 0 DC 1V
+D1 1 2 D1N4002
+R1 2 0 1K
+.LIB "NOM.LIB"
+.DC V1 -1 1 0.01V
+.PROBE V(R1)
+.END
+ 
+*filters
+R1 N1 N2  1k  
+R2 0 N3  1k  
+C1 0 N2  1n  
+C2 N3 N4  1n  
+V1 N1 0 DC 0Vdc AC 1Vac 
+V2 N4 0 DC 0Vdc AC 1Vac
+.AC DEC 100 1 10meg
+.PROBE
+.END
+ 
+*rectifier
+VIN 1 0 SIN(0 10 1K)
+D1 1 2 D1N4148
+R1 2 0 1K
+.LIB "NOM.LIB"
+.TRAN 1N 4M
+.PROBE V(VIN) V(R1)
+.END
+ 
+*rectifier with filter
+VIN 1 0 SIN(0 10 1K)
+D1 1 2 D1N4148
+R1 2 0 1K
+C1 2 0 10U
+.LIB "NOM.LIB"
+.TRAN 1N 4M
+.PROBE V(VIN) V(R1)
+.END
+                </pre>
+            </article>
+            <article id="codeEntry">
+                <div class="entry">PSPICE Code for 9 types of Ampplifiers:</div>
+                <pre>
+*ce fixed-bias amp
+VCC 1 0 DC 16V
+VIN 2 0
++SIN (0 1M 1K)
+RB 1 3 500K
+RC 1 4 3K
+CIN 3 2 10U
+CC 4 5 10U
+ROUT 5 0 1K
+Q1 4 3 0
++BJT
+.MODEL BJT NPN(BF=100 TF=0.1NS RB=10 RC=10 CJE=20PF CJC=5PF)
+.TRAN 1N 3M
+.PROBE V(ROUT) V(VIN)
+.END
+*GAIN=85
+ 
+*ce emitter-bias amp
+VCC 1 0 DC 16V
+VIN 2 0
++SIN (0 1M 1K)
+RB 1 3 500K
+RC 1 4 1.6K
+CIN 3 2 10U
+CC 4 5 10U
+ROUT 5 0 1K
+Q1 4 3 6
++BJT
+RE 6 0 100
+.MODEL BJT NPN(BF=100 TF=0.1NS RB=10 RC=10 CJE=20PF CJC=5PF)
+.TRAN 1N 3M
+.PROBE V(ROUT) V(VIN)
+.END
+*GAIN=5.5
+ 
+*ce self-bias amp
+VCC 1 0 DC 24V
+VIN 2 0
++SIN (0 1M 1K)
+R1 1 3 60K
+RC 1 4 1.6K
+CIN 3 2 10U
+CC 4 5 10U
+ROUT 5 0 1K
+Q1 4 3 6
++BJT
+RE 6 0 100
+R2 3 0 8K
+.MODEL BJT NPN(BF=100 TF=0.1NS RB=10 RC=10 CJE=20PF CJC=5PF)
+.TRAN 1N 3M
+.PROBE V(ROUT) V(VIN)
+.END
+*GAIN=6
+ 
+*ce self-bias with bypass amp
+VCC 1 0 DC 16V
+VIN 2 0
++SIN (0 1M 1K)
+R1 1 3 60K
+RC 1 4 1.6K
+CIN 3 2 10U
+CC 4 5 10U
+ROUT 5 0 1K
+Q1 4 3 6
++BJT
+RE 6 0 100
+R2 3 0 8K
+CE 6 0 200U
+.MODEL BJT NPN(BF=100 TF=0.1NS RB=10 RC=10 CJE=20PF CJC=5PF)
+.TRAN 1N 3M
+.PROBE V(ROUT) V(VIN)
+.END
+*GAIN=140
+ 
+*ce emitter-bias with bypass amp
+VCC 1 0 DC 16V
+VIN 2 0
++SIN (0 1M 1K)
+RB 1 3 500K
+RC 1 4 1.6K
+CIN 3 2 10U
+CC 4 5 10U
+ROUT 5 0 1K
+Q1 4 3 6
++BJT
+RE 6 0 100
+CE 6 0 200U
+.MODEL BJT NPN(BF=100 TF=0.1NS RB=10 RC=10 CJE=20PF CJC=5PF)
+.TRAN 1N 3M
+.PROBE V(ROUT) V(VIN)
+.END
+*GAIN=70
+ 
+*emitter-follower amp
+VCC 1 0 DC 16V
+VIN 2 0 SIN(0 1M 1K)
+RB 1 3 200K
+RE 4 0 100
+CIN 3 2 10U
+CC 4 5 10U
+ROUT 5 0 1K
+Q1 1 3 4 BJT
+.MODEL BJT NPN(BF=100 TF=0.1NS RB=10 RC=10 CJE=20PF CJC=5PF)
+.TRAN 1N 3M
+.PROBE V(VIN) V(ROUT)
+.END
+*GAIN=1
+ 
+*common-base amp
+VCC 0 1 DC 8V
+VEE 2 0 DC 2V
+RC 3 1 5K
+RE 4 2 1K
+CIN 4 5 10U
+VIN 5 0 SIN(0 1M 1K)
+CC 3 6 10U
+ROUT 6 0 1K
+Q1 3 0 4 BJT
+.MODEL BJT PNP(BF=100 TF=0.1NS RB=10 RC=10 CJE=20PF CJC=5PF)
+.TRAN 1N 3M
+.PROBE V(VIN) V(ROUT)
+.END
+*GAIN=30
+ 
+*collector-feedback amp
+VCC 1 0 DC 16V
+RC 1 2 1.6K
+RF 2 3 200K
+CIN 3 4 10U
+VIN 4 0 SIN(0 1M 1K)
+CC 2 5 10U
+ROUT 5 0 1K
+Q1 2 3 0 BJT
+.MODEL BJT NPN(BF=100 TF=0.1NS RB=10 RC=10 CJE=20PF CJC=5PF)
+.TRAN 1N 3M
+.PROBE V(VIN) V(ROUT)
+.END
+*GAIN=100
+ 
+*collector dc-feedback amp
+VCC 1 0 DC 12V
+RC 1 2 1.6K
+RF1 3 4 120K
+RF2 2 4 70K
+CF 4 0 0.01U
+CIN 3 5 10U
+VIN 5 0 SIN(0 1M 1K)
+CC 2 6 10U
+ROUT 6 0 1K
+Q1 2 3 0 BJT
+.MODEL BJT NPN(BF=100 TF=0.1NS RB=10 RC=10 CJE=20PF CJC=5PF)
+.TRAN 1N 3M
+.PROBE V(VIN) V(ROUT)
+.END
+*GAIN=75
+                </pre>
+            </article>
+            <article id="codeEntry">
+                <div class="entry">C++ Source Code for simple Paint Program:</div>
+
+<pre>#include&lt;iostream.h&gt;
+#include&lt;conio.h&gt;
+#include&lt;dos.h&gt;
+#include&lt;stdio.h&gt;
+void main()
+{
+char keypress='z',shape='.';
+int x=10, y=10;
+
+cout&lt;&lt;"PAINT (z-exit)";
+
+do
+{
+if(keypress=='w'){y--;}
+if(keypress=='s'){y++;}
+if(keypress=='a'){x--;}
+if(keypress=='d'){x++;}
+if(keypress=='x'){shape=' ';}
+if(keypress=='y'){shape='.';}
+
+gotoxy(x,y);
+cout&lt;&lt;shape;
+keypress=getch();
+}
+while(keypress!='z');
+
+clrscr();
+}</pre>
+            </article>
+            <article id="codeEntry">
+                <div class="entry">C++ Source Code for simple dir-maker:</div>
+
+<pre>
+
+#include&lt;iostream.h&gt;
+#include&lt;conio.h&gt;
+#include&lt;stdio.h&gt;
+#include&lt;dir.h&gt;
+void main()
+{
+ char fil[20];
+
+ cout&lt;&lt;"\n\n\tEnter target directory?\n\n\t";
+ gets(fil);
+
+ mkdir(fil);
+ chdir(fil);
+
+ mkdir("Resources");
+ mkdir("Files");
+ mkdir("Levels");
+ mkdir("Sound");
+ mkdir("Media");
+ mkdir("SAV");
+
+}</pre>
+            </article>
+        </section>
+    </body>
+</html>
