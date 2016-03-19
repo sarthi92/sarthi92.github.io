@@ -1,6 +1,6 @@
 var webApps={};
 webApps.content=["Bullman Online","Word Charades"];
-webApps.link=["http://sarthi92.github.io/Word-Games/bullman.html",""];
+webApps.link=["http://sarthi92.github.io/Word-Games/bullman.html","http://sarthi92.github.io/Word-Charades"];
 var mobileApps={};
 mobileApps.content=[];
 mobileApps.link=[];
